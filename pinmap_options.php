@@ -5,7 +5,7 @@
 function pinmap_plugin_menu() {
     add_options_page(
         'Pinmap Options',
-        'Pinmap Options',
+        'Pinmap',
         'manage_options',
         'pinmap-info-conf',
         'pinmap_options_display'
@@ -97,7 +97,7 @@ function pinmap_map_api_callback($args) {
 function pinmap_map_key_callback($args) {
     $options = get_option( 'pinmap_options' );
     ?>
-    <input type="text" id="map_key" name="pinmap_options[map_key]" value="<?php echo $options['map_key'] ?>" style="width:340px" />
+    <input type="text" id="map_key" name="pinmap_options[map_key]" <?php if (isset($options['map_key'])) echo 'value="'.$options['map_key'].'"' ?> style="width:340px" />
     <label for="map_key"><?php _e( $args[0] ); ?></label>
 <?php
 }
