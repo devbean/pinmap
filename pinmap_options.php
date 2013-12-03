@@ -85,10 +85,11 @@ function pinmap_map_settings_callback() {
 }
 
 function pinmap_map_api_callback($args) {
-    // $options = get_option( 'pinmap_options' );
+    $options = get_option( 'pinmap_options' );
+    $map_api = isset( $options['map_api'] ) ? esc_attr( $options['map_api'] ) : '';
 ?>
     <select id="map_api" name="pinmap_options[map_api]">
-        <option value="gmap3">Google Maps JavaScript API v3</option>
+        <option value="gmap3" <?php selected( $map_api, 'gmap3' ); ?>>Google Maps JavaScript API v3</option>
     </select>
     <label for="map_api"><?php _e( $args[0] ); ?></label>
 <?php
@@ -96,8 +97,9 @@ function pinmap_map_api_callback($args) {
 
 function pinmap_map_key_callback($args) {
     $options = get_option( 'pinmap_options' );
+    $map_key = isset( $options['map_key'] ) ? esc_attr( $options['map_key'] ) : '';
     ?>
-    <input type="text" id="map_key" name="pinmap_options[map_key]" <?php if (isset($options['map_key'])) echo 'value="'.$options['map_key'].'"' ?> style="width:340px" />
+    <input type="text" id="map_key" name="pinmap_options[map_key]" value="<?php echo $map_key; ?>" style="width:340px" />
     <label for="map_key"><?php _e( $args[0] ); ?></label>
 <?php
 }

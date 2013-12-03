@@ -25,31 +25,53 @@ define( 'PINMAP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 include_once PINMAP_PLUGIN_DIR . '/pinmap_options.php';
 
 function pinmap_scripts() {
+    wp_enqueue_style( 'pinmap', PINMAP_PLUGIN_URL . '/style/pinmap.css' );
     wp_enqueue_script(
         'pinmap',
         PINMAP_PLUGIN_URL . '/scripts/pinmap.js',
         array( 'jquery' )
     );
+    $options = get_option( 'pinmap_options' );
+    $map_api = isset( $options['map_api'] ) ? $options['map_api'] : '';
+    $map_key = isset( $options['map_key'] ) ? $options['map_key'] : '';
+    if ( ! empty( $map_api ) && ! empty( $map_key ) ) {
+        switch ( $map_api ) {
+            case 'gmap3':
+                wp_enqueue_script(
+                    'google_map_v3',
+                    "https://maps.googleapis.com/maps/api/js?key=$map_key&sensor=false");
+                wp_enqueue_script(
+                    'gmap3',
+                    PINMAP_PLUGIN_URL . '/scripts/gmap3.min.js',
+                    array( 'jquery' )
+                );
+                break;
+        }
+    }
 }
 
 add_action( 'admin_enqueue_scripts', 'pinmap_scripts' );
-add_action( 'edit_form_after_editor', 'pinmap_pinpostdiv' );
+add_action( 'add_meta_boxes', 'pinmap_pinpostdiv' );
 
-function pinmap_pinpostdiv() {
+function pinmap_pinpostdiv()
+{
+    $screens = array( 'post', 'page' );
+    foreach ( $screens as $screen ) {
+        add_meta_box(
+            'pinpostdiv',
+            __( 'Pin the Post in Map' ),
+            'pinmap_pinpostdiv_content',
+            $screen
+        );
+    }
+}
+
+function pinmap_pinpostdiv_content()
+{
 ?>
-    <div id="pinmapdiv" class="postbox">
-        <div title="<?php _e('Click to Switch'); ?>" class="handlediv"><br></div><h3 class="hndle"><span><?php _e( 'Pin This Post in Map' ); ?></span></h3>
-        <div class="inside">
-            <form method="POST" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
-                <ul>
-                    <li><label for="fname">Family Name (Sir Name)<span> *</span>: </label>
-                        <input id="fname" maxlength="45" size="10" name="fname" value="" /></li>
-
-                    <li><label for="lname">Last Name<span> *</span>: </label>
-                        <input id="lname" maxlength="45" size="10" name="lname" value="" /></li>
-                </ul>
-            </form>
-        </div>
-    </div>
+    <label for="pinmap_post_placename">Where is this post take place?</label>
+    <input type="text" name="pinmap_post_placename" id="pinmap_post_placename" style="width:300px" />
+    <input type="button" id="pinmap_btn_searchplace" class="button" value="Search Place" />
+    <div id="pinmap_mapdiv"></div>
 <?php
 }
