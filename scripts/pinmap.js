@@ -1,6 +1,4 @@
 jQuery(document).ready(function($) {
-    $("#pinmap_mapdiv").gmap3();
-
     $("#pinmap_btn_searchplace").click(function () {
         $("#pinmap_mapdiv").gmap3({
             getlatlng:{
