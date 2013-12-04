@@ -24,6 +24,25 @@ define( 'PINMAP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 include_once PINMAP_PLUGIN_DIR . '/pinmap_options.php';
 
+/*
+ * Add Settings link beside the activate/deactivate.
+ */
+function pinmap_plugin_action_links( $links, $file ) {
+    static $this_plugin;
+
+    if ( ! $this_plugin ) {
+        $this_plugin = plugin_basename( __FILE__ );
+    }
+
+    if ( $file == $this_plugin ) {
+        $settings_link = '<a href="' . get_bloginfo('wpurl') . '/wp-admin/options-general.php?page=' . PINMAP_PLUGIN_MENU_ID . '">' . __('Settings') . '</a>';
+        $links[] = $settings_link;
+    }
+
+    return $links;
+}
+add_filter( 'plugin_action_links', 'pinmap_plugin_action_links', 10, 2);
+
 function pinmap_scripts() {
     wp_enqueue_style( 'pinmap', PINMAP_PLUGIN_URL . '/style/pinmap.css' );
     wp_enqueue_script(
@@ -49,9 +68,7 @@ function pinmap_scripts() {
         }
     }
 }
-
 add_action( 'admin_enqueue_scripts', 'pinmap_scripts' );
-add_action( 'add_meta_boxes', 'pinmap_pinpostdiv' );
 
 function pinmap_pinpostdiv()
 {
@@ -65,6 +82,7 @@ function pinmap_pinpostdiv()
         );
     }
 }
+add_action( 'add_meta_boxes', 'pinmap_pinpostdiv' );
 
 function pinmap_pinpostdiv_content()
 {

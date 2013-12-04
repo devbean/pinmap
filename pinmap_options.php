@@ -1,4 +1,7 @@
 <?php
+
+define( PINMAP_PLUGIN_MENU_ID, 'pinmap-info-conf' );
+
 /*
  * Add menu page to Options.
  */
@@ -7,7 +10,7 @@ function pinmap_plugin_menu() {
         'Pinmap Options',
         'Pinmap',
         'manage_options',
-        'pinmap-info-conf',
+        PINMAP_PLUGIN_MENU_ID,
         'pinmap_options_display'
     );
 }
