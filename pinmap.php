@@ -14,7 +14,7 @@ Author URI: http://www.devbean.net
 
 // Make sure we don't expose any info if called directly
 if ( !function_exists( 'add_action' ) ) {
-    echo 'Hi there!  I\'m just a plugin, not much I can do when called directly.';
+    echo 'Hi there! I\'m just a plugin, not much I can do when called directly.';
     exit;
 }
 
@@ -43,12 +43,17 @@ function pinmap_plugin_action_links( $links, $file ) {
 }
 add_filter( 'plugin_action_links', 'pinmap_plugin_action_links', 10, 2);
 
-function pinmap_scripts() {
-    wp_enqueue_style( 'pinmap', PINMAP_PLUGIN_URL . '/style/pinmap.css' );
+function pinmap_admin_scripts() {
+    wp_enqueue_style(
+        'pinmap',
+        PINMAP_PLUGIN_URL . '/style/pinmap.css' );
     wp_enqueue_script(
         'pinmap',
         PINMAP_PLUGIN_URL . '/scripts/pinmap.js',
         array( 'jquery' )
+    );
+    wp_enqueue_script(
+        'jquery-ui-autocomplete'
     );
     $options = get_option( 'pinmap_options' );
     $map_api = isset( $options['map_api'] ) ? $options['map_api'] : '';
@@ -68,7 +73,7 @@ function pinmap_scripts() {
         }
     }
 }
-add_action( 'admin_enqueue_scripts', 'pinmap_scripts' );
+add_action( 'admin_enqueue_scripts', 'pinmap_admin_scripts' );
 
 function pinmap_pinpostdiv()
 {
